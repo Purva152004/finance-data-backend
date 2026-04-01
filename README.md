@@ -2,6 +2,10 @@
 
 Professional MERN-style backend (Node.js + Express + MongoDB) with role-based access control, financial record management, summary analytics APIs, and a browser dashboard for assessment demo.
 
+## Live Deployment
+
+- App URL: `https://finance-data-backend.onrender.com/`
+
 ## Live Scope Covered
 
 ### Core requirements (assessment)
@@ -25,7 +29,7 @@ Professional MERN-style backend (Node.js + Express + MongoDB) with role-based ac
 - Express.js
 - MongoDB + Mongoose
 - JWT
-- HTML/CSS/JS dashboard (served from Express)
+- Vanilla HTML/CSS/JS dashboard (served from Express)
 
 ## Project Structure
 
@@ -77,138 +81,54 @@ finance-data-backend/
       user.validation.js
       record.validation.js
       dashboard.validation.js
-```
+ ```
 
 ## Local Setup
-
-1. Go to project:
-```bash
+Go to project:
+```
 cd finance-data-backend
 ```
-
-2. Install dependencies:
-```bash
+Install dependencies:
+```
 npm install
 ```
-
-3. Create env file:
-```bash
+Create env file:
+```
 cp .env.example .env
 ```
-
 On PowerShell:
-```powershell
+```
 Copy-Item .env.example .env
 ```
-
-4. Update `.env` values:
-- `MONGO_URI`
-- `JWT_SECRET`
-- `NODE_ENV=development`
-
-5. Run:
-```bash
+Update .env values:
+```
+MONGO_URI
+JWT_SECRET
+NODE_ENV=development
+```
+Run:
+```
 npm run dev
 ```
-
-6. Open:
-- Dashboard UI: `http://localhost:5000`
-
+Open:
+```
+Dashboard UI: http://localhost:5000
+```
 ## Authentication Flow
-
 ### Create first admin (one-time only)
-`POST /api/auth/bootstrap-admin`
-
+POST /api/auth/bootstrap-admin
+```
 Body:
-```json
+
 {
   "fullName": "Super Admin",
   "email": "admin@test.com",
   "password": "Admin@123"
 }
 ```
-
 ### Register viewer
-`POST /api/auth/register`
+POST /api/auth/register
 
 ### Login
-`POST /api/auth/login`
+POST /api/auth/login
 
-Use `Authorization: Bearer <token>` for protected routes.
-
-## API Endpoints
-
-### Auth
-- `POST /api/auth/bootstrap-admin`
-- `POST /api/auth/register`
-- `POST /api/auth/login`
-- `GET /api/auth/me`
-
-### Users (`admin` only)
-- `POST /api/users`
-- `GET /api/users`
-- `GET /api/users/:id`
-- `PATCH /api/users/:id`
-- `DELETE /api/users/:id`
-
-### Records
-- `POST /api/records` (`admin`)
-- `GET /api/records` (`analyst`, `admin`)
-- `GET /api/records/:id` (`analyst`, `admin`)
-- `PATCH /api/records/:id` (`admin`)
-- `DELETE /api/records/:id` (`admin`, soft delete)
-- `PATCH /api/records/:id/restore` (`admin`)
-
-### Dashboard
-- `GET /api/dashboard/overview`
-- `GET /api/dashboard/trends`
-- `GET /api/dashboard/recent-activity`
-
-## Render Deployment (Step by Step)
-
-### A) Before deploying
-1. Push project to GitHub (steps below).
-2. Ensure MongoDB Atlas is ready:
-   - Database user created
-   - IP access allows Render (`0.0.0.0/0` for testing)
-
-### B) Create service on Render
-1. Open [Render Dashboard](https://dashboard.render.com/)
-2. Click `New +` -> `Web Service`
-3. Connect your GitHub repo
-4. Select your backend repo
-
-### C) Build settings
-- Runtime: `Node`
-- Build Command: `npm install`
-- Start Command: `npm start`
-- Auto-Deploy: `Yes`
-
-### D) Environment variables in Render
-Add these in Render -> `Environment`:
-
-- `MONGO_URI` = your Atlas URI
-- `JWT_SECRET` = long random string
-- `JWT_EXPIRES_IN` = `1d`
-- `BCRYPT_SALT_ROUNDS` = `10`
-- `NODE_ENV` = `production`
-
-Do not set `PORT` manually on Render. Render provides it automatically.
-
-### E) Deploy and verify
-1. Click `Create Web Service`
-2. Wait until deploy finishes
-3. Open:
-   - `https://your-service-name.onrender.com/`
-
-## Troubleshooting
-
-- `bad auth : authentication failed`
-  - Atlas username/password is wrong or password has special characters not URL-encoded.
-
-- `Unable to connect to the remote server` locally
-  - Backend is not running. Start with `npm run dev`.
-
-- Render deploy succeeds but API fails
-  - Check Render env vars and service logs.
-  - Verify Atlas network access includes Render IP range (`0.0.0.0/0` during testing).
