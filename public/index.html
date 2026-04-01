@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Finance Command Center</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div id="toast" class="toast hidden"></div>
+
+    <section id="authSection" class="auth-shell">
+      <div class="auth-hero">
+        <h1>Finance Command Center</h1>
+        <p>
+          Production-style dashboard for role-based finance operations. Use this interface to
+          evaluate backend authentication, records lifecycle, and analytics.
+        </p>
+        <ul>
+          <li>Role-aware access for viewer, analyst, and admin</li>
+          <li>Live summary metrics with trend chart and activity stream</li>
+          <li>Records and users workflow for real assessment demos</li>
+        </ul>
+      </div>
+
+      <div class="auth-panel">
+        <div class="auth-tabs">
+          <button class="tab-btn active" data-auth-tab="login">Login</button>
+          <button class="tab-btn" data-auth-tab="bootstrap">Create First Admin</button>
+          <button class="tab-btn" data-auth-tab="register">Register Viewer</button>
+        </div>
+
+        <div id="loginTab" class="auth-tab active">
+          <h2>Welcome Back</h2>
+          <form id="loginForm" class="form">
+            <label>Email<input name="email" type="email" required /></label>
+            <label>Password<input name="password" type="password" required /></label>
+            <button class="btn primary" type="submit">Sign In</button>
+          </form>
+        </div>
+
+        <div id="bootstrapTab" class="auth-tab">
+          <h2>Create First Admin</h2>
+          <form id="bootstrapForm" class="form">
+            <label>Full Name<input name="fullName" required /></label>
+            <label>Email<input name="email" type="email" required /></label>
+            <label>Password<input name="password" type="password" required /></label>
+            <button class="btn primary" type="submit">Create Admin</button>
+          </form>
+        </div>
+
+        <div id="registerTab" class="auth-tab">
+          <h2>Viewer Self Registration</h2>
+          <form id="registerForm" class="form">
+            <label>Full Name<input name="fullName" required /></label>
+            <label>Email<input name="email" type="email" required /></label>
+            <label>Password<input name="password" type="password" required /></label>
+            <button class="btn" type="submit">Create Viewer Account</button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <section id="appSection" class="app-shell hidden">
+      <aside class="sidebar">
+        <div class="brand">
+          <h2>FC</h2>
+          <div>
+            <p>Finance Control</p>
+            <small>Assessment Dashboard</small>
+          </div>
+        </div>
+        <nav class="menu">
+          <button class="menu-item active" data-view="overview">Overview</button>
+          <button class="menu-item" data-view="records" data-min-role="analyst">Records</button>
+          <button class="menu-item" data-view="users" data-min-role="admin">Users</button>
+        </nav>
+        <div class="session-card">
+          <p id="sessionName"></p>
+          <p id="sessionRole" class="role-pill"></p>
+          <button id="logoutBtn" class="btn danger">Logout</button>
+        </div>
+      </aside>
+
+      <main class="workspace">
+        <header class="workspace-header">
+          <div>
+            <h1 id="welcomeLine">Dashboard</h1>
+            <p>Track records, monitor cashflow, and validate role-based flows.</p>
+          </div>
+          <div class="period-filter">
+            <label>Start<input id="globalStartDate" type="date" /></label>
+            <label>End<input id="globalEndDate" type="date" /></label>
+            <label>
+              Period
+              <select id="globalPeriod">
+                <option value="monthly">monthly</option>
+                <option value="weekly">weekly</option>
+              </select>
+            </label>
+            <button id="refreshOverviewBtn" class="btn primary" type="button">Refresh</button>
+          </div>
+        </header>
+
+        <section id="viewOverview" class="view active">
+          <div class="kpi-grid">
+            <article class="kpi-card">
+              <h3>Total Income</h3>
+              <p id="kpiIncome">Rs 0</p>
+            </article>
+            <article class="kpi-card">
+              <h3>Total Expenses</h3>
+              <p id="kpiExpense">Rs 0</p>
+            </article>
+            <article class="kpi-card">
+              <h3>Net Balance</h3>
+              <p id="kpiBalance">Rs 0</p>
+            </article>
+            <article class="kpi-card">
+              <h3>Recent Entries</h3>
+              <p id="kpiEntries">0</p>
+            </article>
+          </div>
+
+          <div class="overview-grid">
+            <article class="panel">
+              <div class="panel-head">
+                <h2>Trend Analysis</h2>
+                <small id="trendMeta">Period: monthly</small>
+              </div>
+              <svg id="trendChart" viewBox="0 0 760 260" role="img" aria-label="Trend chart"></svg>
+            </article>
+
+            <article class="panel">
+              <div class="panel-head">
+                <h2>Category Totals</h2>
+              </div>
+              <div id="categoryList" class="list"></div>
+            </article>
+          </div>
+
+          <article class="panel">
+            <div class="panel-head">
+              <h2>Recent Activity</h2>
+            </div>
+            <div id="recentList" class="recent-list"></div>
+          </article>
+        </section>
+
+        <section id="viewRecords" class="view">
+          <article class="panel">
+            <div class="panel-head">
+              <h2>Records Explorer</h2>
+              <p id="recordMeta"></p>
+            </div>
+            <form id="recordFilterForm" class="tool-grid">
+              <label>
+                Type
+                <select name="type">
+                  <option value="">all</option>
+                  <option value="income">income</option>
+                  <option value="expense">expense</option>
+                </select>
+              </label>
+              <label>Category<input name="category" /></label>
+              <label>Start<input name="startDate" type="date" /></label>
+              <label>End<input name="endDate" type="date" /></label>
+              <label class="checkline">
+                <input name="includeDeleted" type="checkbox" />
+                Include deleted (admin)
+              </label>
+              <button class="btn" type="submit">Apply Filter</button>
+            </form>
+
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Amount</th>
+                    <th>Type</th>
+                    <th>Category</th>
+                    <th>Date</th>
+                    <th>Owner</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="recordsBody"></tbody>
+              </table>
+            </div>
+          </article>
+
+          <article class="panel" data-min-role="admin">
+            <div class="panel-head">
+              <h2>Create Record</h2>
+            </div>
+            <form id="recordCreateForm" class="tool-grid">
+              <label>Amount<input name="amount" type="number" step="0.01" required /></label>
+              <label>
+                Type
+                <select name="type" required>
+                  <option value="income">income</option>
+                  <option value="expense">expense</option>
+                </select>
+              </label>
+              <label>Category<input name="category" required /></label>
+              <label>Date<input name="date" type="date" required /></label>
+              <label>Notes<input name="notes" /></label>
+              <button class="btn primary" type="submit">Create Record</button>
+            </form>
+          </article>
+        </section>
+
+        <section id="viewUsers" class="view">
+          <article class="panel">
+            <div class="panel-head">
+              <h2>User Administration</h2>
+              <button id="loadUsersBtn" class="btn" type="button">Refresh Users</button>
+            </div>
+            <form id="userCreateForm" class="tool-grid">
+              <label>Full Name<input name="fullName" required /></label>
+              <label>Email<input name="email" type="email" required /></label>
+              <label>Password<input name="password" type="password" required /></label>
+              <label>
+                Role
+                <select name="role">
+                  <option value="viewer">viewer</option>
+                  <option value="analyst">analyst</option>
+                  <option value="admin">admin</option>
+                </select>
+              </label>
+              <button class="btn primary" type="submit">Create User</button>
+            </form>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="usersBody"></tbody>
+              </table>
+            </div>
+          </article>
+        </section>
+      </main>
+    </section>
+
+    <script src="/app.js"></script>
+  </body>
+</html>
