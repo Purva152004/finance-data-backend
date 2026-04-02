@@ -355,7 +355,7 @@ const refreshOverview = async () => {
 
 const renderRecords = (pagination = {}) => {
   if (!state.records.length) {
-    el.recordsBody.innerHTML = "<tr><td colspan='7'>No records found</td></tr>";
+    el.recordsBody.innerHTML = "<tr class='empty-row'><td colspan='7'>No records found</td></tr>";
     el.recordMeta.textContent = "No data";
     return;
   }
@@ -371,13 +371,13 @@ const renderRecords = (pagination = {}) => {
 
       return `
       <tr>
-        <td>${money.format(record.amount || 0)}</td>
-        <td>${safe(record.type)}</td>
-        <td>${safe(record.category)}</td>
-        <td>${new Date(record.date).toLocaleDateString()}</td>
-        <td>${safe(record.createdBy?.fullName || "-")}</td>
-        <td><span class="badge ${record.isDeleted ? "warn" : "success"}">${record.isDeleted ? "deleted" : "active"}</span></td>
-        <td>${actionButton}</td>
+        <td data-label="Amount">${money.format(record.amount || 0)}</td>
+        <td data-label="Type">${safe(record.type)}</td>
+        <td data-label="Category">${safe(record.category)}</td>
+        <td data-label="Date">${new Date(record.date).toLocaleDateString()}</td>
+        <td data-label="Owner">${safe(record.createdBy?.fullName || "-")}</td>
+        <td data-label="Status"><span class="badge ${record.isDeleted ? "warn" : "success"}">${record.isDeleted ? "deleted" : "active"}</span></td>
+        <td data-label="Action">${actionButton}</td>
       </tr>`;
     })
     .join("");
@@ -454,7 +454,7 @@ const onRecordTableClick = async (evt) => {
 
 const renderUsers = () => {
   if (!state.users.length) {
-    el.usersBody.innerHTML = "<tr><td colspan='5'>No users found</td></tr>";
+    el.usersBody.innerHTML = "<tr class='empty-row'><td colspan='5'>No users found</td></tr>";
     return;
   }
 
@@ -466,13 +466,13 @@ const renderUsers = () => {
           : "-";
       return `
       <tr>
-        <td>${safe(user.fullName)}</td>
-        <td>${safe(user.email)}</td>
-        <td>${safe(user.role)}</td>
-        <td><span class="badge ${user.isActive ? "success" : "warn"}">${
+        <td data-label="Name">${safe(user.fullName)}</td>
+        <td data-label="Email">${safe(user.email)}</td>
+        <td data-label="Role">${safe(user.role)}</td>
+        <td data-label="Status"><span class="badge ${user.isActive ? "success" : "warn"}">${
           user.isActive ? "active" : "inactive"
         }</span></td>
-        <td>${action}</td>
+        <td data-label="Action">${action}</td>
       </tr>`;
     })
     .join("");
